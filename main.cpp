@@ -1,11 +1,13 @@
 #include <iostream>
-#include "src/CmdOptions.h"
+#include "src/App.h"
+#include "src/Version.h"
 #include <string>
 
+namespace bd = bears_den;
 int main( int argc, char* argv[] ) {
-    bd::CmdOptions co;
-    co(argc, argv);
-    std::cout << co.get_string("log-level");
-    //std::cout << "Hello, World!" << std::endl;
+
+    bd::App app( argc, argv);
+    app.Run();
+
     return 0;
 }

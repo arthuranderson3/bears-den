@@ -8,7 +8,8 @@
 #include <exception>
 #include <sstream>
 
-namespace bd {
+namespace bears_den {
+
     using namespace std;
     namespace po = boost::program_options;
 
@@ -46,15 +47,17 @@ namespace bd {
 
         string log_level;
     };
-    CmdOptions::CmdOptions(): pimpl_( new CmdOptions::CmdOptionsImpl )
-    {}
+    CmdOptions::CmdOptions( int argc, char* argv[] ): pimpl_( new CmdOptions::CmdOptionsImpl )
+    {
+        _init( argc, argv );
+    }
 
     CmdOptions::~CmdOptions() {
         delete pimpl_;
 
     }
 
-    void CmdOptions::_init() {
+    void CmdOptions::_init(int argc, char **argv) {
 
         pimpl_->generic.add_options()
                 ("version,v", "print version string")
@@ -62,18 +65,12 @@ namespace bd {
                 ;
 
         pimpl_->configuration.add_options()
-                ("log-file,lf", po::value<string>(), "Output file")
-                ("log-config,lc", po::value<string>(), "The logging configuration file")
-                ("log-stream,ls", po::value<string>(), "Log to an output stream: stdout default")
-                ("log-level,ll", po::value<string>(&(pimpl_->log_level))->default_value("info"), "Logging level { verbose, info(default), error, debug, trace")
+                ("log-level", po::value<string>(&(pimpl_->log_level))->default_value("info"), "Logging level { verbose, info, error, debug, trace")
                 ;
 
 
         pimpl_->cmdline.add(pimpl_->generic).add(pimpl_->configuration);
-    }
 
-    void CmdOptions::operator()(int argc, char **argv) {
-        _init();
         po::store( po::command_line_parser( argc, argv )
                            .options(pimpl_->cmdline)
                            .run(), pimpl_->vm);
@@ -90,6 +87,12 @@ namespace bd {
 
     int CmdOptions::get_int( string option ) const {
         return pimpl_->vm[option].as<int>();
+    }
+
+    std::ostream& CmdOptions::PrintHelp( std::ostream& out ) const
+    {
+        out << pimpl_->cmdline << std::endl;
+        return out;
     }
 
 }

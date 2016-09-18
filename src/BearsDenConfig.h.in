@@ -1,0 +1,7 @@
+//
+// The configured options and settings for BearsDen
+//
+#define BearsDen_VERSION_MAJOR @BearsDen_VERSION_MAJOR@
+#define BearsDen_VERSION_MINOR @BearsDen_VERSION_MINOR@
+#define BearsDen_VERSION_FIX @BearsDen_VERSION_FIX@
+#define BearsDen_VERSION_TWEAK @BearsDen_VERSION_TWEAK@

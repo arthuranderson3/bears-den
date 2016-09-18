@@ -8,21 +8,21 @@
 #include <iosfwd>
 
 
-namespace bd {
+namespace bears_den {
 
     class UndefinedOptionException;
 
     class CmdOptions {
     public:
-        CmdOptions();
+        CmdOptions( int argc, char* argv[] );
         ~CmdOptions();
-        void operator()( int argc, char* argv[] );
         bool exists( std::string option ) const;
         std::string get_string( std::string option ) const;
         int get_int( std::string option ) const;
 
+        std::ostream& PrintHelp( std::ostream& out ) const;
     private:
-        void _init();
+        void _init(int argc, char* argv[]);
         struct CmdOptionsImpl;
         CmdOptionsImpl* pimpl_;
     };
