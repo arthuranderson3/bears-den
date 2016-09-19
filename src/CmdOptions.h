@@ -11,6 +11,7 @@
 namespace bears_den {
 
     class UndefinedOptionException;
+    namespace internal{ struct CmdOptionsImpl; }
 
     class CmdOptions {
     public:
@@ -23,8 +24,7 @@ namespace bears_den {
         std::ostream& PrintHelp( std::ostream& out ) const;
     private:
         void _init(int argc, char* argv[]);
-        struct CmdOptionsImpl;
-        CmdOptionsImpl* pimpl_;
+        internal::CmdOptionsImpl* pimpl_;
     };
 
 }

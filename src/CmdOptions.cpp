@@ -3,14 +3,15 @@
 //
 
 #include "CmdOptions.h"
-#include <boost/program_options.hpp>
-#include <string>
+#include "internal/CmdOptionsImpl.h"
+
 #include <exception>
 #include <sstream>
 
 namespace bears_den {
 
     using namespace std;
+    namespace intern = bears_den::internal;
     namespace po = boost::program_options;
 
     class UndefinedOptionException: public std::exception{
@@ -32,22 +33,7 @@ namespace bears_den {
         std::string option_name_;
     };
 
-    struct CmdOptions::CmdOptionsImpl {
-
-        CmdOptionsImpl():
-                generic(        "Generic:"),
-                configuration(  "Configuration:"),
-                hidden(         "Hidden:")
-        {}
-        po::options_description generic;
-        po::options_description configuration;
-        po::options_description hidden;
-        po::options_description cmdline;
-        po::variables_map vm;
-
-        string log_level;
-    };
-    CmdOptions::CmdOptions( int argc, char* argv[] ): pimpl_( new CmdOptions::CmdOptionsImpl )
+    CmdOptions::CmdOptions( int argc, char* argv[] ): pimpl_( new intern::CmdOptionsImpl )
     {
         _init( argc, argv );
     }
@@ -65,7 +51,9 @@ namespace bears_den {
                 ;
 
         pimpl_->configuration.add_options()
-                ("log-level", po::value<string>(&(pimpl_->log_level))->default_value("info"), "Logging level { verbose, info, error, debug, trace")
+                ("log-level",
+                 po::value<string>(&(pimpl_->log_level))->default_value("info"),
+                 "Logging level { verbose, info, error, debug, trace" )
                 ;
 
 

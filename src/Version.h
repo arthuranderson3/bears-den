@@ -9,7 +9,6 @@
 
 namespace bears_den {
 
-
     class Version {
 
     public:
@@ -19,20 +18,19 @@ namespace bears_den {
         Version( Version&& v );
         Version& operator=( const Version& v );
         Version& operator=( Version&& v );
-        int get_Major() const;
-        int get_Minor() const;
-        int get_Fix() const;
-        int get_Tweak() const;
 
-        std::ostream& Print( std::ostream& out ) const;
-        std::wostream& Print( std::wostream& out ) const;
+
+        void Swap( Version& v );
 
     private:
         struct VersionImpl;
         VersionImpl* pimpl_;
+
+        friend std::ostream& operator<<( std::ostream& , const Version& );
+        friend std::wostream& operator<<( std::wostream& , const Version& );
     };
 
-    std::ostream& operator<<( std::ostream& out, const Version& v );
-    std::wostream& operator<<( std::wostream& out, const Version& v );
+    std::ostream & operator<<( std::ostream& out, const Version& v );
+    std::wostream & operator<<( std::wostream& out, const Version& v );
 }
 #endif //BEARS_DEN_VERSION_H

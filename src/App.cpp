@@ -4,25 +4,14 @@
 
 #include "App.h"
 #include "CmdOptions.h"
-#include <glog/logging.h>
 #include "Version.h"
+#include "src/internal/TAppImpl.h"
 #include <iostream>
 
 namespace bears_den {
-    struct AppImpl{
-        AppImpl( int argc, char* argv[]):cmdOptions( argc, argv)
-        {
-            google::InitGoogleLogging( argv[0] );
-            google::LogToStderr();
-            //google::SetStderrLogging( google::INFO );
-            //google::LogSink sink;
-        }
-        ~AppImpl(){
-            google::ShutdownGoogleLogging();
-        }
-        CmdOptions cmdOptions;
 
-        Version version;
+    struct App::AppImpl : public internal::TAppImpl< CmdOptions, Version > {
+        AppImpl( int argc, char* argv[]): internal::TAppImpl<CmdOptions, Version>( argc, argv ){}
     };
 
     App::App( int argc, char** argv ): pimpl_( new AppImpl( argc, argv) ) {
@@ -43,7 +32,4 @@ namespace bears_den {
         }
     }
 
-    Version App::get_Version() const {
-        return pimpl_->version;
-    }
 }

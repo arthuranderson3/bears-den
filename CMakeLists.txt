@@ -20,7 +20,7 @@ find_package( Boost 1.61 REQUIRED COMPONENTS program_options )
 if( Boost_FOUND )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -v")
 
-    set(SOURCE_FILES main.cpp src/CmdOptions.cpp src/App.cpp src/Version.cpp )
+    set(SOURCE_FILES main.cpp src/CmdOptions.cpp src/App.cpp src/Version.cpp)
     add_executable(bears_den ${SOURCE_FILES})
     target_link_libraries( bears_den ${Boost_LIBRARIES} )
     target_link_libraries( bears_den /usr/local/lib/libglog.dylib )

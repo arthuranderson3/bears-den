@@ -3,79 +3,84 @@
 //
 
 #include "Version.h"
-#include "BearsDenConfig.h"
 #include <iostream>
+#include "BearsDenConfig.h"
+#include "internal/TWeakOrder.h"
 
 namespace bears_den {
 
     struct Version::VersionImpl{
-        VersionImpl(int major_, int minor_, int fix_, int tweak_) : major_(major_), minor_(minor_), fix_(fix_),
-                                                                    tweak_(tweak_) {}
 
-        int major_;
-        int minor_;
-        int fix_;
-        int tweak_;
+        VersionImpl() : majorMinor_( BearsDen_VERSION_MAJOR ,BearsDen_VERSION_MINOR ),
+                        fixTweak_( BearsDen_VERSION_FIX, BearsDen_VERSION_TWEAK ) {}
+
+        typedef internal::TWeakOrder<int16_t, int16_t > HighLow;
+        HighLow majorMinor_;
+        HighLow fixTweak_;
+
+        bool operator<( const VersionImpl& other ) const {
+            return (majorMinor_ < other.majorMinor_) || (majorMinor_ == other.majorMinor_ && fixTweak_ < other.fixTweak_ );
+        }
+
+        bool operator==( const VersionImpl& other ) const {
+            return majorMinor_ == other.majorMinor_ && fixTweak_ == other.fixTweak_;
+        }
+
+        std::ostream& Print( std::ostream& out, char sep ) const {
+            majorMinor_.Print( out, sep);
+            out << sep;
+            fixTweak_.Print(out, sep);
+            return out;
+        }
+
+        std::wostream& Print( std::wostream& out, wchar_t sep ) const {
+            majorMinor_.Print( out, sep);
+            out << sep;
+            fixTweak_.Print(out, sep);
+            return out;
+        }
+
     };
 
-    Version::Version():pimpl_( new VersionImpl( BearsDen_VERSION_MAJOR, BearsDen_VERSION_MINOR, BearsDen_VERSION_FIX, BearsDen_VERSION_TWEAK ) ) {}
+
+    Version::Version():pimpl_( new Version::VersionImpl ) {}
     Version::~Version() {
         delete pimpl_;
     }
-    Version::Version( const Version& v ):pimpl_( new VersionImpl( *(v.pimpl_) ) ){}
+    Version::Version( const Version& v ):pimpl_( new Version::VersionImpl( *(v.pimpl_) ) ){}
     Version::Version( Version&& v ):pimpl_( v.pimpl_ ){
         v.pimpl_ = nullptr;
     }
     Version& Version::operator=( const Version& v ){
         Version tmp( v );
-        delete pimpl_;
-        pimpl_ = tmp.pimpl_;
-        tmp.pimpl_ = nullptr;
+        Swap( tmp );
         return *this;
     }
 
     Version& Version::operator=( Version&& v ){
         delete pimpl_;
+
         pimpl_ = v.pimpl_;
+
         delete v.pimpl_;
         v.pimpl_ = nullptr;
+
+        return *this;
     }
 
-    int Version::get_Major() const {
-        return pimpl_->major_;
-    }
-
-    int Version::get_Minor() const {
-        return pimpl_->minor_;
-    }
-
-    int Version::get_Fix() const {
-        return pimpl_->fix_;
-    }
-
-    int Version::get_Tweak() const {
-        return pimpl_->tweak_;
-    }
-
-    std::ostream& Version::Print( std::ostream& out ) const{
-        char dot = '.';
-        out << pimpl_->major_ << dot << pimpl_->minor_ << dot << pimpl_->fix_ << dot << pimpl_->tweak_;
-        return out;
-    }
-
-    std::wostream& Version::Print( std::wostream& out ) const{
-        wchar_t dot = L'.';
-        out << pimpl_->major_ << dot << pimpl_->minor_ << dot << pimpl_->fix_ << dot << pimpl_->tweak_;
-        return out;
+    void Version::Swap( Version& v ){
+        std::swap( pimpl_, v.pimpl_ );
     }
 
 
     std::ostream& operator<<( std::ostream& out, const Version& v ){
-        v.Print(out);
+        char sep = '.';
+        v.pimpl_->Print(out, sep);
         return out;
     }
     std::wostream& operator<<( std::wostream& out, const Version& v ){
-        v.Print( out );
+        wchar_t sep = L'.';
+        v.pimpl_->Print(out, sep);
         return out;
     }
 

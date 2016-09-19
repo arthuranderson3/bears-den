@@ -7,8 +7,6 @@
 
 namespace bears_den {
 
-    class AppImpl;
-    class Version;
     class App {
 
     public:
@@ -17,12 +15,15 @@ namespace bears_den {
         App( const App& ) = delete;
         App& operator=( const App& ) = delete;
         App( const App&& ) = delete;
+
+        App();
+
         App& operator=( const App&& ) = delete;
 
         void Run();
 
-        Version get_Version() const;
     private:
+        struct AppImpl;
         AppImpl* pimpl_;
     };
 

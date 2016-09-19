@@ -3,9 +3,10 @@
 //
 
 #ifndef BEARS_DEN_LIBEXPORTS_H
+
 #define BEARS_DEN_LIBEXPORTS_H
 
-#ifdef(WIN32)
+#if defined (WIN32)
 
 #ifdef(bdCommon_EXPORTS)
 #define BD_COMMON_EXPORT __declspec( dllexport )
